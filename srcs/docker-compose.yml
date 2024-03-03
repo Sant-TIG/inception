@@ -1,0 +1,76 @@
+version: '3.9'
+
+services:
+  mariadb:
+    container_name: mariadb_container
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    image: mariadb_db
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    env_file:
+      - ./.env
+    expose:
+      - 3306
+    restart: always
+    networks:
+      - inception
+
+  wordpress:
+    container_name: wordpress_container
+    depends_on:
+      - mariadb #poner el mismo nombre que container name?
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+    image: wordpress_app
+    volumes:
+      - wordpress_data:/var/www/html
+    env_file:
+      - ./.env
+    expose:
+      - 9000
+    restart: always
+    networks:
+      - inception
+
+  nginx:
+    container_name: nginx_container
+    depends_on:
+      - wordpress
+    build:
+      context: ./requirements/nginx
+      dockerfile: Dockerfile
+    image: nginx_server
+    volumes:
+      - wordpress_data:/var/www/html
+    env_file:
+      - ./.env
+    ports:
+      - "443:443"
+    restart: always
+    networks:
+      - inception
+    extra_hosts:
+      - "${DOMAIN_NAME}:127.0.0.1"
+
+volumes:
+  mariadb_data:
+    name: mariadb_data
+    driver: local
+    driver_opts:
+      type: volume
+      o: bind
+      device: ${HOME}/data/mariadb_data
+  wordpress_data:
+    name: wordpress_data
+    driver: local
+    driver_opts:
+      type: volume
+      o: bind
+      device: ${HOME}/data/wordpress_data
+
+networks:
+  inception:
+    driver: bridge
