@@ -19,7 +19,7 @@ stop:
 	docker-compose -f $(SRCS) stop
 
 fclean: down
-	docker rmi -f $$(docker images -qa);\
+	docker rmi -f $(docker images -qa);\
 	docker system prune -a --force
 
 re: fclean all
