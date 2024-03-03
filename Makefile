@@ -7,8 +7,8 @@ SRCS = $Sdocker-compose.yml
 all: up
 
 up:
-	mkdir -p ${HOME}/data/mdb_data
-	mkdir -p ${HOME}/data/wp_data
+	mkdir -p ${HOME}/data/mariadb_data
+	mkdir -p ${HOME}/data/wordpress_data
 	docker-compose -f $(SRCS) build \
 	&& docker-compose -f $(SRCS) up -d
 
