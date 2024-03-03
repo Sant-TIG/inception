@@ -10,7 +10,7 @@ up:
 	mkdir -p ${HOME}/data/mariadb_data
 	mkdir -p ${HOME}/data/wordpress_data
 	docker-compose -f $(SRCS) build \
-	&& docker-compose -f $(SRCS) up -d
+	&& docker-compose -f $(SRCS) up
 
 down:
 	docker-compose -f $(SRCS) down
